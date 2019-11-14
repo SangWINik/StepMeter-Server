@@ -25,6 +25,7 @@ public class AccountDAO implements IAccountDAO {
         try {
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM account WHERE id=%s", id);
+            System.out.println(String.format("Executing query: %s", query));
             ResultSet rs = statement.executeQuery(query);
             boolean exists = rs.next();
             if (exists) {
@@ -47,6 +48,7 @@ public class AccountDAO implements IAccountDAO {
         try {
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM account WHERE email='%s'", email);
+            System.out.println(String.format("Executing query: %s", query));
             ResultSet rs = statement.executeQuery(query);
             boolean exists = rs.next();
             if (exists) {
@@ -70,6 +72,7 @@ public class AccountDAO implements IAccountDAO {
             try {
                 Statement statement = connection.createStatement();
                 String query = String.format("INSERT INTO account (email, registrationDate) VALUES ('%s', now())", email);
+                System.out.println(String.format("Executing query: %s", query));
                 statement.executeUpdate(query);
             } catch (Exception e) {
                 e.printStackTrace();

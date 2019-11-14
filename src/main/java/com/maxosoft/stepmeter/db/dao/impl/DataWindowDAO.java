@@ -29,6 +29,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM datawindow WHERE sessionId IN(" +
                     "SELECT id FROM recordingsession WHERE accountId=%s)", accountId);
+            System.out.println(String.format("Executing query: %s", query));
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
                 dataWindows.add(this.getFromResultSet(rs));
@@ -50,6 +51,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM datawindow WHERE sessionId NOT IN(" +
                     "SELECT id FROM recordingsession WHERE accountId=%s)", accountId);
+            System.out.println(String.format("Executing query: %s", query));
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
                 dataWindows.add(this.getFromResultSet(rs));
@@ -71,6 +73,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             String query = String.format("INSERT INTO recordingsession(accountId, deviceId, dateStart, dateEnd) " +
                     "VALUES ('%s', '%s', '%s', '%s')", recordingSession.getAccountId(), recordingSession.getDeviceId(),
                     recordingSession.getDateStart(), recordingSession.getDateEnd());
+            System.out.println(String.format("Executing query: %s", query));
             statement.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
             ResultSet key = statement.getGeneratedKeys();
             key.next();
@@ -81,15 +84,12 @@ public class DataWindowDAO implements IDataWindowDAO {
     }
 
     @Override
-    public void saveDataWindows(List<DataWindow> dataWindows) {
+    public void saveDataWindows(List<DataWindow> dataWindows, boolean includeGyroscope) {
         if (dataWindows == null || dataWindows.isEmpty()) {
             return;
         }
 
         try {
-            boolean includeGyroscope = dataWindows.stream().noneMatch(dw ->
-                    (dw.getGyrMinX() == null && dw.getGyrMaxX() == null) || (dw.getGyrMinX().equals(0f) && dw.getGyrMaxX().equals(0f)));
-
             Statement statement = connection.createStatement();
             String fields = "sessionId, accMinX, accMaxX, accMinY, accMaxY, accMinZ, accMaxZ, accMeanX, accMeanY, accMeanZ, " +
                     "accVarX, accVarY, accVarZ, accDevX, accDevY, accDevZ, accSkewX, accSkewY, accSkewZ," +
@@ -105,6 +105,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             }
 
             String query = String.format("INSERT INTO datawindow(%s) VALUES %s", fields, String.join(",", values));
+            System.out.println(String.format("Executing query: %s", query));
             statement.execute(query);
         } catch (Exception e) {
             e.printStackTrace();

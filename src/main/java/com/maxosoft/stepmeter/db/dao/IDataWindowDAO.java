@@ -9,5 +9,5 @@ public interface IDataWindowDAO {
     List<DataWindow> getDataWindowsForAccount(Long accountId);
     List<DataWindow> getDataWindowsExceptAccount(Long accountId);
     void saveRecordingSession(RecordingSession recordingSession);
-    void saveDataWindows(List<DataWindow> dataWindows);
+    void saveDataWindows(List<DataWindow> dataWindows, boolean includeGyroscope);
 }

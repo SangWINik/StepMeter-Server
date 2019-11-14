@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DataWindowService implements IDataWindowService {
@@ -37,8 +38,12 @@ public class DataWindowService implements IDataWindowService {
 
         dataWindowDAO.saveRecordingSession(recordingSession);
         if (dataWindows != null && !dataWindows.isEmpty()) {
+            boolean includeGyroscope = dataWindows.stream().anyMatch(dw -> (dw.getGyrMinX() != null));
+            if (includeGyroscope) {
+                dataWindows = dataWindows.stream().filter(dw -> dw.getGyrMinX() != null).collect(Collectors.toList());
+            }
             dataWindows.forEach(dw -> dw.setSessionId(recordingSession.getId()));
-            dataWindowDAO.saveDataWindows(dataWindows);
+            dataWindowDAO.saveDataWindows(dataWindows, includeGyroscope);
         }
     }
 

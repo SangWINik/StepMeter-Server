@@ -64,6 +64,9 @@ public class DataWindowDto {
     private Float gyrZeroZ;
 
     public DataWindowDto(DataWindow dataWindow) {
+        this.id = dataWindow.getId();
+        this.sessionId = dataWindow.getSessionId();
+
         this.accMinX = dataWindow.getAccMinX();
         this.accMaxX = dataWindow.getAccMaxX();
         this.accMinY = dataWindow.getAccMinY();
@@ -117,6 +120,9 @@ public class DataWindowDto {
 
     public DataWindow getDataWindow() {
         DataWindow dataWindow = new DataWindow();
+
+        dataWindow.setId(this.id);
+        dataWindow.setSessionId(this.sessionId);
 
         dataWindow.setAccMinX(this.accMinX);
         dataWindow.setAccMaxX(this.accMaxX);
