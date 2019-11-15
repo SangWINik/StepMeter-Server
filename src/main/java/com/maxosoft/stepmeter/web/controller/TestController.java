@@ -1,6 +1,6 @@
 package com.maxosoft.stepmeter.web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.maxosoft.stepmeter.db.ConnectionFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,9 +13,6 @@ import java.util.List;
 
 @RestController
 public class TestController {
-
-    @Autowired
-    private Connection connection;
 
     @GetMapping(value = "/")
     public ResponseEntity testNoPath() {
@@ -31,12 +28,13 @@ public class TestController {
     public ResponseEntity testDb() {
         List<String> rows = new ArrayList<>();
         try {
+            Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * FROM testtable");
             while (rs.next()) {
                 rows.add(rs.getString("textcolumn"));
             }
-
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,9 +1,9 @@
 package com.maxosoft.stepmeter.db.dao.impl;
 
+import com.maxosoft.stepmeter.db.ConnectionFactory;
 import com.maxosoft.stepmeter.db.dao.IDataWindowDAO;
 import com.maxosoft.stepmeter.db.model.DataWindow;
 import com.maxosoft.stepmeter.db.model.RecordingSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -15,9 +15,6 @@ import java.util.List;
 @Repository
 public class DataWindowDAO implements IDataWindowDAO {
 
-    @Autowired
-    private Connection connection;
-
     @Override
     public List<DataWindow> getDataWindowsForAccount(Long accountId) {
         List<DataWindow> dataWindows = new ArrayList<>();
@@ -26,6 +23,7 @@ public class DataWindowDAO implements IDataWindowDAO {
         }
 
         try {
+            Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM datawindow WHERE sessionId IN(" +
                     "SELECT id FROM recordingsession WHERE accountId=%s)", accountId);
@@ -34,6 +32,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             while (rs.next()) {
                 dataWindows.add(this.getFromResultSet(rs));
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,6 +47,7 @@ public class DataWindowDAO implements IDataWindowDAO {
         }
 
         try {
+            Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM datawindow WHERE sessionId NOT IN(" +
                     "SELECT id FROM recordingsession WHERE accountId=%s)", accountId);
@@ -56,6 +56,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             while (rs.next()) {
                 dataWindows.add(this.getFromResultSet(rs));
             }
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,6 +70,7 @@ public class DataWindowDAO implements IDataWindowDAO {
         }
 
         try {
+            Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             String query = String.format("INSERT INTO recordingsession(accountId, deviceId, dateStart, dateEnd) " +
                     "VALUES ('%s', '%s', '%s', '%s')", recordingSession.getAccountId(), recordingSession.getDeviceId(),
@@ -78,6 +80,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             ResultSet key = statement.getGeneratedKeys();
             key.next();
             recordingSession.setId(key.getLong(1));
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,6 +93,7 @@ public class DataWindowDAO implements IDataWindowDAO {
         }
 
         try {
+            Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             String fields = "sessionId, accMinX, accMaxX, accMinY, accMaxY, accMinZ, accMaxZ, accMeanX, accMeanY, accMeanZ, " +
                     "accVarX, accVarY, accVarZ, accDevX, accDevY, accDevZ, accSkewX, accSkewY, accSkewZ," +
@@ -107,6 +111,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             String query = String.format("INSERT INTO datawindow(%s) VALUES %s", fields, String.join(",", values));
             System.out.println(String.format("Executing query: %s", query));
             statement.execute(query);
+            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

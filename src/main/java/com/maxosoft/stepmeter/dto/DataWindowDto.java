@@ -1,5 +1,6 @@
 package com.maxosoft.stepmeter.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maxosoft.stepmeter.db.model.DataWindow;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -118,6 +119,7 @@ public class DataWindowDto {
         this.gyrZeroZ = dataWindow.getGyrZeroZ();
     }
 
+    @JsonIgnore
     public DataWindow getDataWindow() {
         DataWindow dataWindow = new DataWindow();
 
