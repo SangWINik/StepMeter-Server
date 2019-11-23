@@ -1,5 +1,7 @@
 package com.maxosoft.stepmeter.web.controller;
 
+import com.maxosoft.stepmeter.db.dao.IAccountDAO;
+import com.maxosoft.stepmeter.db.model.Account;
 import com.maxosoft.stepmeter.dto.DataWindowDto;
 import com.maxosoft.stepmeter.dto.RecordingSessionDto;
 import com.maxosoft.stepmeter.services.IDataWindowService;
@@ -14,6 +16,8 @@ public class RecordingSessionController {
 
     @Autowired
     private IDataWindowService dataWindowService;
+    @Autowired
+    private IAccountDAO accountDAO;
 
     @GetMapping(value = "/data-windows-for-account/{accountId}")
     public ResponseEntity getDataWindowsForAccount(@PathVariable Long accountId) {
@@ -36,7 +40,15 @@ public class RecordingSessionController {
     }
 
     @PostMapping(value = "/recording-session")
-    public void saveRecordingSession(@RequestBody RecordingSessionDto recordingSession) {
+    public void saveRecordingSession(@RequestBody RecordingSessionDto recordingSession, @RequestParam(required = false) String email) {
+        if (recordingSession.getAccountId() == null) {
+            if (email != null) {
+                Account account = accountDAO.getByEmail(email);
+                recordingSession.setAccountId(account.getId());
+            } else {
+                return;
+            }
+        }
         dataWindowService.saveRecordingSession(recordingSession);
     }
 }
