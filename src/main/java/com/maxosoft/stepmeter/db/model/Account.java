@@ -12,5 +12,6 @@ import java.sql.Timestamp;
 public class Account {
     private Long id;
     private String email;
+    private Boolean isAdmin;
     private Timestamp registrationDate;
 }

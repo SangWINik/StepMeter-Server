@@ -26,7 +26,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM datawindow WHERE sessionId IN(" +
-                    "SELECT id FROM recordingsession WHERE accountId=%s AND deleted <> '1')", accountId);
+                    "SELECT id FROM recordingsession WHERE accountId=%s AND (deleted IS NULL OR deleted <> '1'))", accountId);
             System.out.println(String.format("Executing query: %s", query));
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
@@ -50,7 +50,7 @@ public class DataWindowDAO implements IDataWindowDAO {
             Connection connection = ConnectionFactory.getConnection();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM datawindow WHERE sessionId NOT IN(" +
-                    "SELECT id FROM recordingsession WHERE accountId=%s AND deleted <> '1')", accountId);
+                    "SELECT id FROM recordingsession WHERE accountId=%s AND (deleted IS NULL OR deleted <> '1'))", accountId);
             System.out.println(String.format("Executing query: %s", query));
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {

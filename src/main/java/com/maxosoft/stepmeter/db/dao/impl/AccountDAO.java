@@ -87,6 +87,7 @@ public class AccountDAO implements IAccountDAO {
         Account account = new Account();
         account.setId(resultSet.getLong("id"));
         account.setEmail(resultSet.getString("email"));
+        account.setIsAdmin(resultSet.getBoolean("isAdmin"));
         account.setRegistrationDate(resultSet.getTimestamp("registrationDate"));
         return account;
     }

@@ -15,11 +15,13 @@ import java.util.Date;
 public class AccountDto {
     private Long id;
     private String email;
+    private Boolean isAdmin;
     private Date registrationDate;
 
     public AccountDto(Account account) {
         this.id = account.getId();
         this.email = account.getEmail();
+        this.isAdmin = account.getIsAdmin();
         this.registrationDate = account.getRegistrationDate();
     }
 }
